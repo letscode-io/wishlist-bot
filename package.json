@@ -1,0 +1,16 @@
+{
+  "name": "wishlist-bot",
+  "version": "0.0.1",
+  "main": "bot.js",
+  "repository": "https://letscode-io@github.com/letscode-io/wishlist-bot.git",
+  "author": "letscode_io",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/rtm-api": "^5.0.2",
+    "@slack/web-api": "^5.1.0",
+    "dotenv": "^8.1.0"
+  },
+  "scripts": {
+    "start": "node bot.js"
+  }
+}
