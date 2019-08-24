@@ -5,8 +5,9 @@ const {
   WebClient
 } = require('@slack/web-api');
 const dotenv = require('dotenv');
-
 dotenv.config();
+
+const User = require('./models/user')
 
 let channel;
 
@@ -29,8 +30,8 @@ rtm.on('authenticated', async (rtmStartData) => {
   console.log(channel);
 });
 
-rtm.on('ready', async (event) => {
-  console.log('Ready:', event);
+rtm.on('ready', async () => {
+  console.log('Ready');
 });
 
 rtm.on('user_typing', (event) => {
@@ -38,11 +39,19 @@ rtm.on('user_typing', (event) => {
 })
 
 rtm.on('message', async (event) => {
-  const { text, channel, user } = event
+  const { text, channel, user: slackUserId } = event
 
-  switch (text) {
-    case 'start':
-      await rtm.sendMessage('Hello there', channel);
+  switch (true) {
+    case text === 'start':
+      await rtm.sendMessage('Hello, please enter /birthday DD-MM-YYYY', channel);
+      await User.create({ slackUserId, channel });
+      break;
+    case /^birthday/.test(text):
+      const [command, birthday] = text.match(/^birthday\s(.+)$/);
+      const [day, month, year] = birthday.split('-');
+      const birthDate = new Date(year, month - 1, day);
+
+      const user = await User.findOneAndUpdate({ slackUserId }, { birthDate });
       break;
 
     default:

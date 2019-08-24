@@ -2,6 +2,7 @@
 
 ## Commands
 - start
+- birthday $date
 - add
 - delete
 - list
