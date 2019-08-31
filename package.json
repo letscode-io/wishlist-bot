@@ -6,12 +6,15 @@
   "author": "letscode_io",
   "license": "MIT",
   "dependencies": {
+    "@slack/bolt": "^1.2.0",
     "@slack/rtm-api": "^5.0.2",
     "@slack/web-api": "^5.1.0",
+    "date-fns": "^2.0.1",
     "dotenv": "^8.1.0",
     "mongoose": "^5.6.10"
   },
   "scripts": {
-    "start": "node bot.js"
+    "start": "node bot.js",
+    "start_bolt": "node bot_bolt.js"
   }
 }
