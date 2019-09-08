@@ -1,48 +1,20 @@
-const {
-  App
-} = require('@slack/bolt');
-const {
-  parse
-} = require("date-fns")
-const dotenv = require('dotenv');
-dotenv.config();
-
-const User = require('./models/user')
+const app = require('./app')
 
 const start = require('./messages/start')
 const wish = require('./messages/wish')
 const wishlist = require('./messages/wishlist')
+const help = require('./messages/help')
 
-const app = new App({
-  token: process.env.SLACK_BOT_USER_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET
-});
+const setBirthday = require('./actions/set_birthday')
+const deleteWishFromList = require('./actions/delete_wish_from_list')
 
 app.message('start', start);
-app.message('wish', wish);
+app.message(/^wish\s(.*)/, wish);
 app.message('wishlist', wishlist);
+app.message('help', help);
 
-app.action('set_birthday', async ({
-  body: {
-    actions,
-    channel,
-    user
-  },
-  ack,
-  say
-}) => {
-  // Acknowledge the action
-  ack();
-  const rawDate = actions[0].selected_date;
-  const birthDate = parse(rawDate, 'yyyy-MM-dd', new Date())
-  const dbUser = await User.findOneAndUpdate({
-    slackUserId: user.id
-  }, {
-    birthDate,
-    channel: channel.id
-  });
-  say(`${dbUser.slackUserId} has been created.`);
-});
+app.action('set_birthday', setBirthday);
+app.action('delete_wish_from_list', deleteWishFromList);
 
 (async () => {
   // Start your app

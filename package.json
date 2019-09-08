@@ -15,6 +15,9 @@
   },
   "scripts": {
     "start": "node bot.js",
-    "start_bolt": "node bot_bolt.js"
+    "start_bolt": "nodemon bot_bolt.js"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
   }
 }
