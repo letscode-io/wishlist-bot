@@ -7,10 +7,11 @@ const wishSchema = new mongoose.Schema({
 })
 
 const userSchema = new mongoose.Schema({
-  name: String,
-  slackUserId: String,
-  channel: String,
   birthDate: Date,
+  name: String,
+  slackImChannel: String,
+  slackTeamId: String,
+  slackUserId: String,
   wishes: [wishSchema]
 });
 

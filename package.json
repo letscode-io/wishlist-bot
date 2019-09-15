@@ -14,8 +14,7 @@
     "mongoose": "^5.6.10"
   },
   "scripts": {
-    "start": "node bot.js",
-    "start_bolt": "nodemon bot_bolt.js"
+    "start": "nodemon bot.js"
   },
   "devDependencies": {
     "nodemon": "^1.19.2"

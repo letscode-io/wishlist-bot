@@ -1,62 +1,28 @@
-const {
-  RTMClient
-} = require('@slack/rtm-api');
-const {
-  WebClient
-} = require('@slack/web-api');
-const dotenv = require('dotenv');
-dotenv.config();
+const app = require('./app')
 
-const User = require('./models/user')
+const start = require('./messages/start')
+const wish = require('./messages/wish')
+const wishlist = require('./messages/wishlist')
+const help = require('./messages/help')
 
-let channel;
+const setBirthday = require('./actions/set_birthday')
+const deleteWishFromList = require('./actions/delete_wish_from_list')
 
-const token = process.env.SLACK_TOKEN;
+const wishlistCommand = require('./commands/wishlist')
 
-const rtm = new RTMClient(token);
-const web = new WebClient(token);
+app.message('start', start);
+app.message(/^wish\s(.*)/, wish);
+app.message('wishlist', wishlist);
+app.message('help', help);
 
-rtm.on('authenticated', async (rtmStartData) => {
-  const {
-    team: {
-      id: teamId
-    }
-  } = rtmStartData
-  const {
-    members
-  } = await web.users.list()
+app.action('set_birthday', setBirthday);
+app.action('delete_wish_from_list', deleteWishFromList);
 
-  channel = await web.im.open({ user: members[1].id });
-  console.log(channel);
-});
+app.command('/wishlist', wishlistCommand);
 
-rtm.on('ready', async () => {
-  console.log('Ready');
-});
+(async () => {
+  // Start your app
+  await app.start(process.env.PORT || 3000);
 
-rtm.on('user_typing', (event) => {
-  console.log(event);
-})
-
-rtm.on('message', async (event) => {
-  const { text, channel, user: slackUserId } = event
-
-  switch (true) {
-    case text === 'start':
-      await rtm.sendMessage('Hello, please enter /birthday DD-MM-YYYY', channel);
-      await User.create({ slackUserId, channel });
-      break;
-    case /^birthday/.test(text):
-      const [command, birthday] = text.match(/^birthday\s(.+)$/);
-      const [day, month, year] = birthday.split('-');
-      const birthDate = new Date(year, month - 1, day);
-
-      const user = await User.findOneAndUpdate({ slackUserId }, { birthDate });
-      break;
-
-    default:
-      break;
-  }
-})
-
-rtm.start().catch(console.error);
+  console.log('⚡️ Bolt app is running!');
+})();
