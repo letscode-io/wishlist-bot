@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
   slackImChannel: String,
   slackTeamId: String,
   slackUserId: String,
-  wishes: [wishSchema]
+  wishes: [wishSchema],
+  yearOfBirthday: Number
 });
 
 const User = db.model('User', userSchema);

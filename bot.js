@@ -1,5 +1,15 @@
 const app = require('./app')
 
+const cron = require('node-cron')
+const User = require('./models/user')
+
+const {
+  startOfToday,
+  setYear,
+  parseISO,
+  addDays,
+  startOfDay
+} = require('date-fns')
 const start = require('./messages/start')
 const wish = require('./messages/wish')
 const wishlist = require('./messages/wishlist')
@@ -19,6 +29,21 @@ app.action('set_birthday', setBirthday);
 app.action('delete_wish_from_list', deleteWishFromList);
 
 app.command('/wishlist', wishlistCommand);
+
+cron.schedule('0 14 * * 1-5', async () => {
+  const inTwoWeeks = addDays(setYear(startOfToday(), 1990), 14)
+  const users = await User.find({
+    birthDate: inTwoWeeks
+  })
+
+  users.forEach(async (user) => {
+    await app.client.chat.postMessage({
+      token: process.env.SLACK_BOT_USER_TOKEN,
+      channel: user.slackImChannel,
+      text: "Hey, your birthday is in 2 weeks. Please add some items to your wishlist!"
+    });
+  });
+});
 
 (async () => {
   // Start your app

@@ -12,7 +12,6 @@ module.exports = async ({
   ack,
   say
 }) => {
-  // Acknowledge the action
   ack();
 
   let dbUser = await User.findOneAndUpdate({
