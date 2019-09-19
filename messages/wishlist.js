@@ -1,13 +1,19 @@
 const User = require("../models/user");
 const datePicker = require("../blocks/date_picker");
 
-const getWishesBlock = require("../helpers/get_wishes_block")
+const getWishesBlock = require("../helpers/get_wishes_block");
 
 module.exports = async function({
-  message: { user: slackUserId },
-  context: { user },
+  message: { user: slackUserId, team: slackTeamId },
+  context: { user: contextUser },
   say
 }) {
+  const user =
+    contextUser ||
+    (await User.findOne({
+      slackUserId,
+      slackTeamId
+    }));
 
   if (!user) {
     return say({ blocks: datePicker() });

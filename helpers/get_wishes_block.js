@@ -13,9 +13,9 @@ function getAccessory(wish) {
 }
 
 module.exports = (wishes, options) => {
-  const accessory = options.editable ? getAccessory(wish) : {};
-
   return wishes.map(wish => {
+    const accessory = options.editable ? getAccessory(wish) : {};
+
     return {
       "type": "section",
       "text": {

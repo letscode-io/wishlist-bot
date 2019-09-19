@@ -1,10 +1,7 @@
-const datePicker = require('../blocks/date_picker')
+const datePicker = require("../blocks/date_picker");
 
-module.exports = function({
-  message,
-  say
-}) {
+module.exports = function({ message, say }) {
   try {
     say({ blocks: datePicker() });
   } catch (error) {}
-}
+};
