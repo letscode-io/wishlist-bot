@@ -4,10 +4,10 @@ const COMMANDS = {
   "wishlist": "Shows list of wishes",
 }
 
-module.exports = async function ({
+module.exports = function ({
+  context: { user },
   say
 }) {
-
   const blocks = Object.keys(COMMANDS).map(command => {
     return {
       type: "section",

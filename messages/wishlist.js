@@ -1,56 +1,39 @@
-const User = require('../models/user')
+const User = require("../models/user");
+const datePicker = require("../blocks/date_picker");
 
-module.exports = async function ({
-  message: {
-    user: slackUserId
-  },
+const getWishesBlock = require("../helpers/get_wishes_block")
+
+module.exports = async function({
+  message: { user: slackUserId },
+  context: { user },
   say
 }) {
-  const dbUser = await User.findOne({
-    slackUserId
-  });
 
-  let message
+  if (!user) {
+    return say({ blocks: datePicker() });
+  }
 
-  if (dbUser.wishes.length > 0) {
-    const wishSections = dbUser.wishes.map(wish => {
-      return {
-        "type": "section",
-        "text": {
-          "type": "mrkdwn",
-          "text": wish.link
-        },
-        "accessory": {
-          "type": "button",
-          "style": "danger",
-          "text": {
-            "type": "plain_text",
-            "text": "Delete",
-            "emoji": true
-          },
-          "action_id": "delete_wish_from_list",
-          "value": wish.id
-        }
-      }
-    })
+  let message;
 
+  if (user.wishes.length > 0) {
     message = {
-      blocks: [{
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": "Hello User, here's the list of your wishes:"
+      blocks: [
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "Hello User, here's the list of your wishes:"
           }
         },
         {
-          "type": "divider"
+          type: "divider"
         },
-        ...wishSections
+        ...getWishesBlock(user.wishes, { editable: true })
       ]
-    }
+    };
   } else {
-    message = "You haven't wished anything yet."
+    message = "You haven't wished anything yet.";
   }
 
-  say(message)
+  say(message);
 };

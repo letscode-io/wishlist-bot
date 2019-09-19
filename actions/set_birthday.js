@@ -1,19 +1,10 @@
-const {
-  parseISO,
-  getYear,
-  setYear
-} = require('date-fns')
-const User = require('../models/user')
+const { parseISO, getYear, setYear } = require("date-fns");
+const User = require("../models/user");
 
 const DEFAULT_YEAR = 1990;
 
 module.exports = async ({
-  body: {
-    actions,
-    channel,
-    user,
-    team
-  },
+  body: { actions, channel, user, team },
   ack,
   say
 }) => {
@@ -24,10 +15,17 @@ module.exports = async ({
   const birthDate = setYear(parseISO(selectedDate), DEFAULT_YEAR);
   const yearOfBirthday = getYear(birthDate);
 
-  let dbUser = await User.findOne({ slackUserId: user.id, slackTeamId: team.id })
+  let dbUser = await User.findOne({
+    slackUserId: user.id,
+    slackTeamId: team.id
+  });
 
   if (dbUser) {
-    await dbUser.update({ birthDate, yearOfBirthday, slackImChannel: channel.id })
+    await dbUser.update({
+      birthDate,
+      yearOfBirthday,
+      slackImChannel: channel.id
+    });
     say(`${dbUser.slackUserId} has been updated.`);
   } else {
     dbUser = await User.create({
@@ -35,8 +33,8 @@ module.exports = async ({
       yearOfBirthday,
       slackImChannel: channel.id,
       slackTeamId: team.id,
-      slackUserId: user.id,
-    })
+      slackUserId: user.id
+    });
     say(`${dbUser.slackUserId} has been created.`);
   }
-}
+};

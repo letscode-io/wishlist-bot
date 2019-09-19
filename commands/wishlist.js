@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const getWishesBlock = require("../helpers/get_wishes_block")
 
 module.exports = async ({ ack, say, command }) => {
   ack();
@@ -7,30 +8,22 @@ module.exports = async ({ ack, say, command }) => {
 
   const user = await User.findOne({ slackUserId: text[1], slackTeamId: command.team_id });
 
-  const wishSections = user.wishes.map(wish => {
-    return {
-      "type": "section",
-      "text": {
-        "type": "mrkdwn",
-        "text": wish.link
-      }
-    }
-  })
+  if (!user) {
+    say("The user has not applied their wishlist yet.");
+  }
 
-  const message = {
+  say({
     blocks: [{
         "type": "section",
         "text": {
           "type": "mrkdwn",
-          "text": "Hello User, here's the list of your wishes:"
+          "text": `Here's the wishlist of the user:`
         }
       },
       {
         "type": "divider"
       },
-      ...wishSections
+      ...getWishesBlock(user.wishes, { editable: false })
     ]
-  }
-
-  say(message);
+  });
 }
