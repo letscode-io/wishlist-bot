@@ -1,12 +1,12 @@
 # wishlist-bot
 
 ## Commands
+
 - start
-- birthday $date
-- add
+- wish
 - delete
-- list
-- list @michael
+- wishlist
+- wishlist @michael
 
 
 ## Models
