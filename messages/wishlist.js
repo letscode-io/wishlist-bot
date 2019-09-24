@@ -1,20 +1,12 @@
-const User = require("../models/user");
 const datePicker = require("../blocks/date_picker");
 
-const getWishesBlock = require("../helpers/get_wishes_block");
+const getWishesBlock = require("../blocks/get_wishes_block");
 
 module.exports = async function({
-  message: { user: slackUserId, team: slackTeamId },
-  context: { user: contextUser },
+  context: { user },
   say
 }) {
-  const user =
-    contextUser ||
-    (await User.findOne({
-      slackUserId,
-      slackTeamId
-    }));
-
+  // If user didn't set birthday date, ask him to set it
   if (!user) {
     return say({ blocks: datePicker() });
   }

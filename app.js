@@ -1,3 +1,7 @@
+/**
+ * Initialize Bolt App
+ */
+
 const {
   App
 } = require('@slack/bolt');

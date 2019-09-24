@@ -1,21 +1,13 @@
-const User = require("../models/user");
 const datePicker = require("../blocks/date_picker");
 
 module.exports = async function({
-  message: { text, user: slackUserId, team: slackTeamId },
   say,
   context: {
-    user: contextUser,
+    user,
     matches: [_, link]
   }
 }) {
-  const user =
-    contextUser ||
-    (await User.findOne({
-      slackUserId,
-      slackTeamId
-    }));
-
+  // If user didn't set birthday date, ask him to set it
   if (!user) {
     return say({ blocks: datePicker() });
   }
