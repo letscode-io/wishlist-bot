@@ -20,7 +20,7 @@ const deleteWishFromList = require("./actions/delete_wish_from_list");
 // Commands Handlers
 const wishlistCommand = require("./commands/wishlist");
 
-// Middlewares Handlers
+// Middlewares
 const globalMiddleware = require("./middlewares/global");
 
 app.use(globalMiddleware);
