@@ -42,7 +42,7 @@ module.exports = async ({
     ...wishSections
   ].filter(section => section);
 
-  // Update the message that sent delete action
+  // Update the original message containing the list of wishes
   app.client.chat.update({
     token: context.botToken,
     channel: channel.id,
