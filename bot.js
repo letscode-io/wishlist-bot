@@ -43,7 +43,7 @@ app.action("delete_wish_from_list", deleteWishFromList);
 app.command("/wishlist", wishlistCommand);
 
 /**
- * Cron job that try to find users who
+ * Cron job that tries to find users who
  * has a birthday in two weeks and send them notification
  * once a day
  */
