@@ -4,14 +4,14 @@
  */
 const User = require("../models/user");
 
-const getUserId = (body) => body.user && body.user.id || body.event && body.event.user || body.user_id
-const getTeamId = (body) => body.team && body.team.id || body.event && body.event.team || body.team_id
+const getUserId = ({ user, event, user_id }) => user && user.id || event && event.user || user_id
+const getTeamId = ({ team, event, team_id }) => team && team.id || event && event.team || team_id
 
 module.exports = async ({ body, context, next }) => {
   const slackUserId = getUserId(body);
   const slackTeamId = getTeamId(body);
 
-  if (userId && teamId) {
+  if (slackUserId && slackTeamId) {
     const dbUser = await User.findOne({ slackUserId, slackTeamId })
     context.user = dbUser
   }
