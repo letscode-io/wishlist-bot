@@ -1,5 +1,9 @@
 const User = require('../models/user')
-const getWishesBlock = require("../helpers/get_wishes_block")
+const getWishesBlock = require("../blocks/get_wishes_block")
+
+/**
+ * Handle /wishlist @nickname command
+ */
 
 module.exports = async ({ ack, say, command }) => {
   ack();

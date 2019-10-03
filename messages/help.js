@@ -4,7 +4,7 @@ const COMMANDS = {
   wishlist: "Shows list of wishes"
 };
 
-module.exports = function({ context: { user }, say }) {
+module.exports = function({ say }) {
   const blocks = Object.keys(COMMANDS).map(command => {
     return {
       type: "section",

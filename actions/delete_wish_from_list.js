@@ -1,14 +1,15 @@
 const app = require("../app");
 const User = require("../models/user");
+const getWishesBlock = require('../blocks/get_wishes_block')
 
 module.exports = async ({
   context,
   body: { actions, channel, user, message },
-  ack,
-  say
+  ack
 }) => {
   ack();
 
+  // Remove wish from wishlist and return user
   let dbUser = await User.findOneAndUpdate(
     {
       slackUserId: user.id
@@ -23,29 +24,10 @@ module.exports = async ({
     { new: true }
   );
 
-  const wishSections = dbUser.wishes.map(wish => {
-    return {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: wish.link
-      },
-      accessory: {
-        type: "button",
-        style: "danger",
-        text: {
-          type: "plain_text",
-          text: "Delete",
-          emoji: true
-        },
-        action_id: "delete_wish_from_list",
-        value: wish.id
-      }
-    };
-  });
+  const wishSections = getWishesBlock(dbUser.wishes, { editable: true });
 
-  const areWishesEmpty = wishSections.length > 0;
-  const header = areWishesEmpty
+  const areWishesNotEmpty = wishSections.length > 0;
+  const header = areWishesNotEmpty
     ? "Hello User, here's the list of your wishes:"
     : "Hey, you don't have any wishes anymore. Type *wish* _item_ to add some!";
   const newMessageBlocks = [
@@ -56,10 +38,11 @@ module.exports = async ({
         text: header
       }
     },
-    areWishesEmpty && { type: "divider" },
+    areWishesNotEmpty && { type: "divider" },
     ...wishSections
   ].filter(section => section);
 
+  // Update the original message containing the list of wishes
   app.client.chat.update({
     token: context.botToken,
     channel: channel.id,

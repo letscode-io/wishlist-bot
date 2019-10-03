@@ -6,19 +6,19 @@ const DEFAULT_YEAR = 1990;
 module.exports = async ({
   body: { actions, channel, user, team },
   ack,
-  say
+  say,
+  context: { user: dbUser }
 }) => {
   // Acknowledge the action
   ack();
 
+  // Preparing the date for parsing
   const selectedDate = `${actions[0].selected_date}T00:00:00.000Z`;
-  const birthDate = setYear(parseISO(selectedDate), DEFAULT_YEAR);
-  const yearOfBirthday = getYear(birthDate);
-
-  let dbUser = await User.findOne({
-    slackUserId: user.id,
-    slackTeamId: team.id
-  });
+  // Setting birth day and month in DEFAULT_YEAR for convenient searching
+  const parsedDate = parseISO(selectedDate)
+  const birthDate = setYear(parsedDate, DEFAULT_YEAR);
+  // Setting birth year in the separate field
+  const yearOfBirthday = getYear(parsedDate);
 
   if (dbUser) {
     await dbUser.update({
